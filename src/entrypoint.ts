@@ -7,8 +7,7 @@ const getChangedPackages = async () => {
 
   const { data: files } = await octokit.pulls.listFiles({
     ...github.context.repo,
-    // pull_number: github.context.payload!.pull_request!.number,
-    pull_number: 1418,
+    pull_number: github.context.payload!.pull_request!.number,
   });
 
   // @TODO This assumes standard structure of lerna monorepos
