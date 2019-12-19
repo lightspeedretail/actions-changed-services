@@ -1,0 +1,21 @@
+{
+  "name": "changed-services",
+  "version": "1.0.0",
+  "description": "Compute changed services on a PR",
+  "main": "entrypoint.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.2.0",
+    "@actions/exec": "^1.0.1",
+    "@actions/github": "^2.0.0",
+    "execa": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.7",
+    "typescript": "^3.7.2"
+  }
+}

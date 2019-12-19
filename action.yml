@@ -1,0 +1,6 @@
+name: 'Changed Packages Action'
+description: 'Determine changed Lerna packages and distribute them in parallel'
+author: 'Lightspeed HQ'
+runs:
+  using: 'node12'
+  main: 'dist/entrypoint.js'
