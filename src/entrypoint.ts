@@ -5,13 +5,33 @@ const getChangedPackages = async () => {
   const token = process.env.GITHUB_TOKEN!;
   const octokit = new github.GitHub(token);
 
-  const { data: files } = await octokit.pulls.listFiles({
-    ...github.context.repo,
-    pull_number: github.context.payload!.pull_request!.number,
-  });
+  let allFilenames: string[];
+
+  if (github.context.eventName === 'pull_request') {
+    const pullNumber = github.context.payload!.pull_request!.number;
+    core.info(`📝 Determining chnaged files for PR ${pullNumber}`);
+
+    const { data: files } = await octokit.pulls.listFiles({
+      ...github.context.repo,
+      pull_number: pullNumber,
+    });
+
+    allFilenames = files.map(file => file.filename);
+  } else if (github.context.eventName === 'push') {
+    const ref = process.env.GITHUB_SHA!;
+    core.info(`📝 Determining chnaged files for ref ${ref}`);
+
+    const { data } = await octokit.repos.getCommit({
+      ...github.context.repo,
+      ref: process.env.GITHUB_SHA!,
+    });
+
+    allFilenames = data.files.map(file => file.filename);
+  } else {
+    throw new Error(`Unexpected event ${github.context.eventName}`);
+  }
 
   // @TODO This assumes standard structure of lerna monorepos
-  const allFilenames = files.map(file => file.filename);
   const packageFilenames = allFilenames.filter(filename => filename.startsWith('packages/'));
   const packages = Array.from(new Set(packageFilenames.map(filename => filename.split('/')[1])));
 
